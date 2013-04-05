@@ -1,0 +1,3 @@
+EXT = .exe
+RM = $(GNU_TOOLS)/bin/rm$(EXT)
+MKDIR = $(GNU_TOOLS)/bin/mkdir$(EXT)

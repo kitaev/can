@@ -1,0 +1,3 @@
+TOOLSET_ROOT = C:/Program Files (x86)/COSMIC/CXSTM8_EVAL
+ST_TOOLSET_ROOT = C:/Program Files (x86)/STMicroelectronics/st_toolset
+GNU_TOOLS = C:/Program Files (x86)/Git
