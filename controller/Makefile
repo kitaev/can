@@ -22,6 +22,7 @@ TARGET = $(DIRBUILD)/$(TARGET_NAME)
 SRCS = $(wildcard $(DIRSRC)/*.c)
 OBJS = $(addprefix $(DIRBUILD)/,$(SRCS:.c=.o))
 LKF = stm8lkf.lkf
+#LKF = vasja.lkf
 
 CFLAGS=+mods0 -eg -debug -pxp -no -pp -l -i"$(TOOLSET_INC)"
 

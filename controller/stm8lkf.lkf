@@ -14,6 +14,9 @@
 +def __eeprom_start=0x4000
 +def __eeprom_size=0x7f
 
+# flash, no auto init
++seg .const -b __flash_start+__vector_size -m __flash_size-__vector_size -n .constants -it
++seg .text -a .constants -n .text
 
 # ram zpage for @tiny vars
 +seg .bsct -b __ram_start -m __zpage_size -n .zpagei
@@ -26,9 +29,6 @@
 # eeprom
 +seg .eeprom -b __eeprom_start -m __eeprom_size -n .eeprom
 
-# flash, no auto init
-+seg .text -b __flash_start+__vector_size -m __flash_size-__vector_size -n .program
-+seg .const -a .program -n .constants
 
 # startup code (set up stack, no auto init)
 crts0.sm8
