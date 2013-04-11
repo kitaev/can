@@ -25,12 +25,15 @@ CC_PREFIX = arm-none-eabi
 CC = "$(GNU_CC_HOME)/bin/$(CC_PREFIX)-gcc$(EXT)"
 LD = "$(GNU_CC_HOME)/bin/$(CC_PREFIX)-ld$(EXT)"
 AS = "$(GNU_CC_HOME)/bin/$(CC_PREFIX)-as$(EXT)"
+SIZE = "$(GNU_CC_HOME)/bin/$(CC_PREFIX)-size$(EXT)"
+
 OBJCOPY = "$(GNU_CC_HOME)/bin/$(CC_PREFIX)-objcopy$(EXT)"
 OBJDUMP = "$(GNU_CC_HOME)/bin/$(CC_PREFIX)-objdump$(EXT)"
 
-CFLAGS = -mcpu=cortex-m4 -march=armv7e-m -mfloat-abi=soft -mthumb -ggdb
+CFLAGS = -mcpu=cortex-m4 -march=armv7e-m -mfloat-abi=soft -mthumb -Os
+#-ggdb
 
-#INCDIRS += -I "$(GNU_CC_HOME)/$(CC_PREFIX)/include"
+INCDIRS += -I "$(GNU_CC_HOME)/$(CC_PREFIX)/include"
 # CMSIS 
 INCDIRS += -I "libs/CMSIS" 
 INCDIRS += -I "libs/CMSIS_device"
@@ -49,6 +52,7 @@ all: clean mkdir $(TARGET).o
 	$(OBJCOPY) -O binary $(TARGET).o $(TARGET).bin
 	$(OBJCOPY) -O ihex $(TARGET).o $(TARGET).hex
 	$(OBJDUMP) -d $(TARGET).o > $(TARGET).txt
+	$(SIZE) $(TARGET).hex
 
 $(TARGET).o: $(SPL_OBJS) $(OBJS) $(AOBJS)
 	$(LD) $(LDFLAGS) -Map $(DIRBUILD)/map.txt -T stm32f30x.ld -o $@ $^
