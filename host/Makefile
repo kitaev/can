@@ -30,8 +30,7 @@ SIZE = "$(GNU_CC_HOME)/bin/$(CC_PREFIX)-size$(EXT)"
 OBJCOPY = "$(GNU_CC_HOME)/bin/$(CC_PREFIX)-objcopy$(EXT)"
 OBJDUMP = "$(GNU_CC_HOME)/bin/$(CC_PREFIX)-objdump$(EXT)"
 
-CFLAGS = -mcpu=cortex-m4 -march=armv7e-m -mfloat-abi=soft -mthumb -Os
-#-ggdb
+CFLAGS = -mcpu=cortex-m4 -march=armv7e-m -mfloat-abi=soft -mthumb -ggdb
 
 INCDIRS += -I "$(GNU_CC_HOME)/$(CC_PREFIX)/include"
 # CMSIS 
@@ -48,13 +47,13 @@ LDFLAGS = $(LIBDIRS) -v
 DEFFLAGS = -DUSE_STDPERIPH_DRIVER
 CCFLAGS = $(CFLAGS) $(DEFFLAGS) $(INCDIRS)
  
-all: clean mkdir $(TARGET).o
-	$(OBJCOPY) -O binary $(TARGET).o $(TARGET).bin
-	$(OBJCOPY) -O ihex $(TARGET).o $(TARGET).hex
-	$(OBJDUMP) -d $(TARGET).o > $(TARGET).txt
+all: $(TARGET).elf
+	$(OBJCOPY) -O binary $(TARGET).elf $(TARGET).bin
+	$(OBJCOPY) -O ihex $(TARGET).elf $(TARGET).hex
+	$(OBJDUMP) -d $(TARGET).elf > $(TARGET).txt
 	$(SIZE) $(TARGET).hex
 
-$(TARGET).o: $(SPL_OBJS) $(OBJS) $(AOBJS)
+$(TARGET).elf: $(SPL_OBJS) $(OBJS) $(AOBJS)
 	$(LD) $(LDFLAGS) -Map $(DIRBUILD)/map.txt -T stm32f30x.ld -o $@ $^
 
 $(DIRBUILD)/%.o : $(DIRSRC)/%.c
@@ -67,14 +66,12 @@ $(DIRBUILD)/%.o : $(DIRSRC)/%.s
 	$(AS) -c $^ -o $@
 
 ifneq ($(STM32_FLASHER),)
-flash: all
+flash: clean all
 	"$(STM32_FLASHER)" $(STM32_FLASHER_ARGS) 
 endif
 
-mkdir:
-	$(MKDIR) $(DIRBUILD)
-
 clean :
-	$(RM) -rf $(DIRBUILD) 
+	$(RM) -rf $(DIRBUILD)
+	$(MKDIR) $(DIRBUILD) 
 
-.PHONY : all mkdir clean
+.PHONY : all flash clean
