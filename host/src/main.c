@@ -3,16 +3,6 @@
 GPIO_InitTypeDef GPIO_Init_Structure;
 NVIC_InitTypeDef NVIC_Init_Structure;
 TIM_TimeBaseInitTypeDef TIM_BaseInit_Structure;
-uint8_t state;
-
-void delay(uint32_t us) {
-	TIM2->ARR = us;
-	TIM2->CNT = 0;
-	TIM2->CR1 |= TIM_CR1_CEN;
-	while((TIM2->SR & TIM_SR_UIF)==0){}
-	TIM2->SR &= ~TIM_SR_UIF;
-	TIM2->CR1 &= ~TIM_CR1_CEN;
-}
 
 void TIM2_IRQHandler(void) {
 	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == RESET) {
@@ -48,7 +38,6 @@ int main(void){
 	NVIC_Init_Structure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_Init(&NVIC_Init_Structure);
 
-	state = 0;
 	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE); // start timer.
 	TIM_Cmd(TIM2, ENABLE);
 
