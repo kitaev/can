@@ -66,6 +66,11 @@ $(DIRBUILD)/%.o : libs/SPL/%.c
 $(DIRBUILD)/%.o : $(DIRSRC)/%.s
 	$(AS) -c $^ -o $@
 
+ifneq ($(STM32_FLASHER),)
+flash: all
+	"$(STM32_FLASHER)" $(STM32_FLASHER_ARGS) 
+endif
+
 mkdir:
 	$(MKDIR) $(DIRBUILD)
 
