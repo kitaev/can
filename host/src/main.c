@@ -21,8 +21,8 @@ int main(void){
 	TIM_TimeBaseStructInit(&TIM_BaseInit_Structure);
 	TIM_BaseInit_Structure.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_BaseInit_Structure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_BaseInit_Structure.TIM_Prescaler = 72;
-	TIM_BaseInit_Structure.TIM_Period = 1000*1000; // 1 second period
+	TIM_BaseInit_Structure.TIM_Prescaler = 7200;
+	TIM_BaseInit_Structure.TIM_Period = 1000*10; // 1 second period
 	TIM_TimeBaseInit(TIM2, &TIM_BaseInit_Structure);
 
 	GPIO_StructInit(&GPIO_Init_Structure);
