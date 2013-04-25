@@ -1,0 +1,41 @@
+#   LINK COMMAND FILE FOR TEST PROGRAM
+#   Copyright (c) 1998 by COSMIC Software
+#
++def __ram_start=0x0
++def __ram_size=0x400
++def __zpage_size=0x100
++def __stack=0x3ff
++def __stack_size=0x21
+
++def __flash_start=0x8000
++def __flash_size=0x2000
++def __vector_size=0x80
+
++def __eeprom_start=0x4000
++def __eeprom_size=0x7f
+
+# flash, no auto init
++seg .const -b __flash_start+__vector_size -m __flash_size-__vector_size -n .constants -it
++seg .text -a .constants -n .text
+
+# ram zpage for @tiny vars
++seg .bsct -b __ram_start -m __zpage_size -n .zpagei
++seg .ubsct -a .zpagei -n .zpageu
+
+# remaining ram for @near vars
++seg .data -b __ram_start+__zpage_size -m __ram_size-__zpage_size-__stack_size -n .data
++seg .bss -a .data -n .bss
+
+# eeprom
++seg .eeprom -b __eeprom_start -m __eeprom_size -n .eeprom
+
+# startup code (set up stack, no auto init)
+build/crts.o
+
+# program
+build/main.o
+build/stm8s_gpio.o
+
+# interrupts vector
++seg .const -b __flash_start -m __vector_size
+build/stm8_interrupt_vector.o
