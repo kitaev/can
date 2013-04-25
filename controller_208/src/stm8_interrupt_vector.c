@@ -18,6 +18,7 @@ struct interrupt_vector {
 
 extern void _stext();     /* startup routine */
 extern void external_interrupt_c(void);
+extern void can_rx_interrupt(void);
 
 struct interrupt_vector const _vectab[] = {
 	{0x82, (interrupt_handler_t)_stext}, /* reset */
@@ -30,7 +31,7 @@ struct interrupt_vector const _vectab[] = {
 	{0x82, external_interrupt_c}, /* irq5  */
 	{0x82, NonHandledInterrupt}, /* irq6  */
 	{0x82, NonHandledInterrupt}, /* irq7  */
-	{0x82, NonHandledInterrupt}, /* irq8  */
+	{0x82, can_rx_interrupt}, /* irq8  */
 	{0x82, NonHandledInterrupt}, /* irq9  */
 	{0x82, NonHandledInterrupt}, /* irq10 */
 	{0x82, NonHandledInterrupt}, /* irq11 */

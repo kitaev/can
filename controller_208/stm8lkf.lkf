@@ -30,12 +30,18 @@
 +seg .eeprom -b __eeprom_start -m __eeprom_size -n .eeprom
 
 # startup code (set up stack, no auto init)
-build/crts.o
+build/crtsi.o
 
 # program
 build/main.o
 build/stm8s_gpio.o
+build/stm8s_can.o
+# libs
+libs/lib/libm.sm8
 
 # interrupts vector
 +seg .const -b __flash_start -m __vector_size
 build/stm8_interrupt_vector.o
+
++def __endzp=@.ubsct        # end of uninitialized zpage
++def __memory=@.bss         # end of bss segment

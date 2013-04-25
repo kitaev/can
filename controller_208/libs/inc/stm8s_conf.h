@@ -12,5 +12,6 @@
 #define assert_param(expr) ((void)0)
 
 #include <stm8s_gpio.h>
+#include <stm8s_can.h>
 
 #endif
