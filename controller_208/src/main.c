@@ -3,9 +3,55 @@
 #define LED_PIN 0
 #define BUTTON_PIN 4
 
-@far @interrupt void external_interrupt_c(void) {
-	uint8_t d = 0x55;
-	CAN_Transmit(0x321, CAN_Id_Standard, CAN_RTR_Data, 1, &d);
+#define F_MASTER = 2000000UL; // internal HSI, 16/8 MHz
+
+uint8_t debounce_counter[2];
+uint8_t debounce_state;
+
+void portc_configure(GPIO_Mode_TypeDef mode) {
+	GPIO_Init(GPIOC, GPIO_PIN_ALL, mode);
+	EXTI->CR1 |= 0x20;
+}
+
+void timer_configure(void) {
+	TIM4_TimeBaseInit(TIM4_PRESCALER_128, 255);
+	TIM4_ClearFlag(TIM4_FLAG_UPDATE);
+	TIM4_ITConfig(TIM4_IT_UPDATE, ENABLE);
+}
+
+void debounce(uint8_t sample) {
+	uint8_t delta = sample ^ debounce_state;
+
+	debounce_counter[1] = (debounce_counter[1] ^ debounce_counter[0]) & delta;
+	debounce_counter[0] = ~debounce_counter[0] & delta;
+
+	debounce_counter[1] &= delta;
+	debounce_counter[0] &= delta;
+
+	debounce_state ^= delta & ~(debounce_counter[1] | debounce_counter[0]);
+}
+
+@far @interrupt void tim4_interrupt(void) {
+	uint8_t s;
+	TIM4_ClearFlag(TIM4_FLAG_UPDATE);
+	s = GPIO_ReadInputData(GPIOC);
+	debounce(s);
+
+	if ((debounce_state & GPIO_PIN_4) == 0) {
+		TIM4_Cmd(DISABLE);
+		CAN_Transmit(0x123, CAN_Id_Standard, CAN_RTR_Data, 1, &debounce_state);
+		portc_configure(GPIO_MODE_IN_PU_IT);
+	}
+}
+
+@far @interrupt void portc_interrupt(void) {
+	portc_configure(GPIO_MODE_IN_PU_NO_IT);
+
+	debounce_counter[0] = 0x00;
+	debounce_counter[1] = 0x00;
+	debounce(GPIO_ReadInputData(GPIOC));
+
+	TIM4_Cmd(ENABLE);
 }
 
 @far @interrupt void can_rx_interrupt(void) {
@@ -42,8 +88,10 @@ void can_configure(void) {
 
 main() {
 	GPIO_Init(GPIOH, GPIO_PIN_0, GPIO_MODE_OUT_PP_LOW_SLOW);
-	GPIO_Init(GPIOC, GPIO_PIN_4, GPIO_MODE_IN_FL_IT);
 
+	debounce_state = 0xFF;
+	portc_configure(GPIO_MODE_IN_PU_IT);
+	timer_configure();
 	can_configure();
 
 	enableInterrupts();

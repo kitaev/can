@@ -36,7 +36,7 @@ DEVICE=STM8S208MB
 all: $(TARGET).elf
 
 %.elf : $(LIB_OBJS) $(OBJS) $(AOBJS)
-	$(LL) -o $(TARGET).sm8 -m $(TARGET).map $(LKF) 
+	$(LL) -ge -o $(TARGET).sm8 -m $(TARGET).map $(LKF) 
 	$(DWRF) $(TARGET).sm8
 	$(HH) -o $(TARGET).s19 $(TARGET).sm8
 	

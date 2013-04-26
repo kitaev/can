@@ -13,5 +13,6 @@
 
 #include <stm8s_gpio.h>
 #include <stm8s_can.h>
+#include <stm8s_tim4.h>
 
 #endif
