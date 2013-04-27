@@ -10,6 +10,7 @@ DIRBUILD = build
 TARGET = $(DIRBUILD)/$(TARGET_NAME)
 LKF = stm8lkf.lkf
 
+INCDIRS += -i"inc"
 INCDIRS += -i"libs/inc"
 
 SRCS = $(wildcard $(DIRSRC)/*.c)

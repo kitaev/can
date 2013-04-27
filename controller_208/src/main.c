@@ -1,9 +1,8 @@
 #include <stm8s_conf.h>
+#include <main.h>
 
 #define LED_PIN 0
 #define BUTTON_PIN 4
-
-#define F_MASTER = 2000000UL; // internal HSI, 16/8 MHz
 
 uint8_t debounce_counter[2];
 uint8_t debounce_state;
