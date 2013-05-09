@@ -35,10 +35,9 @@ void debounce(uint8_t sample) {
 	TIM4_ClearFlag(TIM4_FLAG_UPDATE);
 	s = GPIO_ReadInputData(GPIOC);
 	debounce(s);
-
 	if ((debounce_state & GPIO_PIN_4) == 0) {
 		TIM4_Cmd(DISABLE);
-		CAN_Transmit(0x123, CAN_Id_Standard, CAN_RTR_Data, 1, &debounce_state);
+		CAN_Transmit(0x11, CAN_Id_Standard, CAN_RTR_Data, 1, &debounce_state);
 		portc_configure(GPIO_MODE_IN_PU_IT);
 	}
 }
@@ -63,12 +62,13 @@ void debounce(uint8_t sample) {
 void can_configure(void) {
 	CAN_DeInit();
 
+	// 125 KB/s assuming Fmaster = 2MHz
 	if (!CAN_Init(
 			CAN_MasterCtrl_AllDisabled,
-			CAN_Mode_Silent_LoopBack,
+			CAN_Mode_Normal,
 			CAN_SynJumpWidth_1TimeQuantum,
-			CAN_BitSeg1_8TimeQuantum,
-			CAN_BitSeg2_7TimeQuantum,
+			CAN_BitSeg1_13TimeQuantum,
+			CAN_BitSeg2_2TimeQuantum,
 			0x1)) {
 		return;
 	}
