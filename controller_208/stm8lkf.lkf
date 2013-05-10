@@ -37,6 +37,7 @@ build/main.o
 build/stm8s_gpio.o
 build/stm8s_can.o
 build/stm8s_tim4.o
+build/stm8s_clk.o
 # libs
 libs/lib/libm.sm8
 

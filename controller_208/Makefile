@@ -51,7 +51,7 @@ $(DIRBUILD)/%.o : $(DIRSRC)/%.s
 	$(AS) -o $@ $^ 
 
 flash: clean all
-	$(FLASH) -BoardName=ST-LINK -Device=$(DEVICE) -Port=USB -ProgMode=SWIM -no_loop -no_log -verif -verbose -FileProg=$(TARGET).s19
+	$(FLASH) -BoardName=ST-LINK -Device=$(DEVICE) -Port=USB -ProgMode=SWIM -no_loop -no_log -verif -verbose -FileProg=$(TARGET).s19 -FileOption=options.s19
 
 clean :
 	$(RM) -rf $(DIRBUILD)

@@ -62,14 +62,15 @@ void debounce(uint8_t sample) {
 void can_configure(void) {
 	CAN_DeInit();
 
-	// 125 KB/s assuming Fmaster = 2MHz
+	// 125 KB/s assuming Fmaster = 2MHz, prescaler = 1
+	// 125 KB/s assuming Fmaster = 24MHz, prescaler = 12
 	if (!CAN_Init(
 			CAN_MasterCtrl_AllDisabled,
 			CAN_Mode_Normal,
 			CAN_SynJumpWidth_1TimeQuantum,
 			CAN_BitSeg1_13TimeQuantum,
 			CAN_BitSeg2_2TimeQuantum,
-			0x1)) {
+			12)) {
 		return;
 	}
 
@@ -85,9 +86,31 @@ void can_configure(void) {
 	GPIO_WriteHigh(GPIOH, GPIO_PIN_0);
 }
 
-main() {
-	GPIO_Init(GPIOH, GPIO_PIN_0, GPIO_MODE_OUT_PP_LOW_SLOW);
+void clock_configure(void) {
+	ErrorStatus err;
+	uint16_t timeout = 0x500;
+	CLK_DeInit();
+	CLK_SYSCLKConfig(CLK_PRESCALER_CPUDIV8);
 
+	CLK_PeripheralClockConfig(CLK_PERIPHERAL_ADC, DISABLE);
+	CLK_PeripheralClockConfig(CLK_PERIPHERAL_I2C, DISABLE);
+	CLK_PeripheralClockConfig(CLK_PERIPHERAL_SPI, DISABLE);
+	CLK_PeripheralClockConfig(CLK_PERIPHERAL_TIMER1, DISABLE);
+	CLK_PeripheralClockConfig(CLK_PERIPHERAL_TIMER2, DISABLE);
+	CLK_PeripheralClockConfig(CLK_PERIPHERAL_TIMER3, DISABLE);
+	CLK_PeripheralClockConfig(CLK_PERIPHERAL_UART1, DISABLE);
+	CLK_PeripheralClockConfig(CLK_PERIPHERAL_UART2, DISABLE);
+	CLK_PeripheralClockConfig(CLK_PERIPHERAL_UART3, DISABLE);
+	CLK_CCOCmd(DISABLE);
+
+	CLK_ClockSwitchConfig(CLK_SWITCHMODE_AUTO, CLK_SOURCE_HSE,
+			DISABLE, CLK_CURRENTCLOCKSTATE_DISABLE);
+}
+
+main() {
+	hse_clock_configure();
+
+	GPIO_Init(GPIOH, GPIO_PIN_0, GPIO_MODE_OUT_PP_LOW_SLOW);
 	debounce_state = 0xFF;
 	portc_configure(GPIO_MODE_IN_PU_IT);
 	timer_configure();
