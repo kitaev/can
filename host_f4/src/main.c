@@ -2,11 +2,13 @@
 
 #define LED_PINS GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13 | GPIO_Pin_12
 
-void TIM2_IRQHandler(void) {
-    if (TIM_GetITStatus(TIM2, TIM_IT_Update) == RESET) {
-        return;
-    }
-    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+void uart_print(char * ch) {
+	while(*ch != '\0') {
+		while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+		USART_SendData(USART2, (uint8_t) *ch);
+		while (USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
+		ch++;
+	}
 }
 
 void EXTI0_IRQHandler(void) {
@@ -14,6 +16,8 @@ void EXTI0_IRQHandler(void) {
 		return;
 	}
     EXTI_ClearITPendingBit(EXTI_Line0);
+
+    uart_print("Pressed\r\n\0");
 
     CanTxMsg message;
     message.StdId = 0x11;
@@ -79,26 +83,6 @@ void GPIO_Configure(uint32_t pins) {
 	NVIC_Init(&NVIC_InitStruct);
 }
 
-void TIM2_Configure(void) {
-	TIM_TimeBaseInitTypeDef TIM2_InitStruct;
-	NVIC_InitTypeDef NVIC_InitStruct;
-
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-	TIM_TimeBaseStructInit(&TIM2_InitStruct);
-	TIM2_InitStruct.TIM_ClockDivision = TIM_CKD_DIV1;
-	TIM2_InitStruct.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM2_InitStruct.TIM_Prescaler = 4000; // 21 KHz (84Mhz / 4000)
-	TIM2_InitStruct.TIM_Period = 21000; // 1 second
-	TIM_TimeBaseInit(TIM2, &TIM2_InitStruct);
-
-	NVIC_InitStruct.NVIC_IRQChannel = TIM2_IRQn;
-	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 1;
-	NVIC_Init(&NVIC_InitStruct);
-
-	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-}
 void CAN2_RX0_IRQHandler(void) {
 	if (CAN_GetITStatus(CAN2, CAN_IT_FMP0) == RESET) {
 		return;
@@ -110,6 +94,7 @@ void CAN2_RX0_IRQHandler(void) {
 		CAN_Receive(CAN2, 0, &message);
 		if (message.DLC == 1 && message.Data[0] == 0xEF) {
 			GPIO_ToggleBits(GPIOD, LED_PINS);
+			uart_print("Recevied\r\n\0");
 		}
     }
 }
@@ -173,12 +158,48 @@ void CAN_Configure(void) {
 	NVIC_Init(&NVIC_InitStruct);
 }
 
+void UART_Configure(void) {
+	USART_InitTypeDef USART_InitStructure;
+	USART_ClockInitTypeDef USART_ClockInitStruct;
+	GPIO_InitTypeDef GPIO_InitStruct;
+
+
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
+
+	GPIO_StructInit(&GPIO_InitStruct);
+	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_Init(GPIOA, &GPIO_InitStruct);
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+
+	USART_StructInit(&USART_InitStructure);
+	USART_DeInit(USART2);
+
+	USART_InitStructure.USART_BaudRate = 9600;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
+	USART_InitStructure.USART_Parity = USART_Parity_No;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+
+	USART_Init(USART2, &USART_InitStructure);
+	USART_Cmd(USART2, ENABLE);
+}
+
 void main(void){
 	GPIO_Configure(LED_PINS);
 	CAN_Configure();
+	UART_Configure();
 
-//	TIM2_Configure();
-//	TIM_Cmd(TIM2, ENABLE);
-
-    while(1);
+	while(1);
 }
