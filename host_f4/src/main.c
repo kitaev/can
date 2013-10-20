@@ -1,6 +1,8 @@
 #include "stm32f4xx_conf.h"
 
-#define LED_PINS GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13 | GPIO_Pin_12
+#define LED_PINS GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13
+
+void TIM_Start(void);
 
 void uart_print(char * ch) {
 	while(*ch != '\0') {
@@ -38,7 +40,6 @@ void EXTI0_IRQHandler(void) {
     if (timeout == 0) {
     	GPIO_SetBits(GPIOD, GPIO_Pin_15);
     }
-
 }
 
 void GPIO_Configure(uint32_t pins) {
@@ -56,8 +57,17 @@ void GPIO_Configure(uint32_t pins) {
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-	// A0 Button
+	// Control pin (PC2)
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+	GPIO_StructInit(&GPIO_InitStruct);
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_DOWN;
+	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+	// A0 Button
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 	GPIO_StructInit(&GPIO_InitStruct);
@@ -83,6 +93,62 @@ void GPIO_Configure(uint32_t pins) {
 	NVIC_Init(&NVIC_InitStruct);
 }
 
+void TIM_Config(void) {
+
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+
+	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+
+}
+
+uint16_t timer_counter = 0;
+
+void TIM_Start(void) {
+	if (timer_counter != 0) {
+		return;
+	}
+	timer_counter = 1;
+	// starts timer, should fire every 1ms
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+	TIM_TimeBaseStructInit(&TIM_TimeBaseInitStructure);
+	TIM_TimeBaseInitStructure.TIM_Prescaler = 42000;
+	TIM_TimeBaseInitStructure.TIM_Period = 2;
+	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseInitStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseInitStructure);
+	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+	TIM_Cmd(TIM3, ENABLE);
+	GPIO_SetBits(GPIOD, GPIO_Pin_12);
+	GPIO_SetBits(GPIOC, GPIO_Pin_2);
+
+}
+
+void TIM_Stop(void) {
+	TIM_Cmd(TIM3, DISABLE);
+	timer_counter = 0;
+	GPIO_ResetBits(GPIOD, GPIO_Pin_12);
+}
+
+void TIM3_IRQHandler(void) {
+	if (TIM_GetITStatus(TIM3, TIM_IT_Update) == RESET) {
+		return;
+	}
+	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+	timer_counter++;
+
+	if (timer_counter == 100) {
+		GPIO_ResetBits(GPIOC, GPIO_Pin_2);
+	} else if (timer_counter == 250) {
+		TIM_Stop();
+	}
+}
+
 void CAN2_RX0_IRQHandler(void) {
 	if (CAN_GetITStatus(CAN2, CAN_IT_FMP0) == RESET) {
 		return;
@@ -94,7 +160,8 @@ void CAN2_RX0_IRQHandler(void) {
 		CAN_Receive(CAN2, 0, &message);
 		if (message.DLC == 1 && message.Data[0] == 0xEF) {
 			GPIO_ToggleBits(GPIOD, LED_PINS);
-			uart_print("Recevied\r\n\0");
+			// if timer is not running already, start it.
+			TIM_Start();
 		}
     }
 }
@@ -197,9 +264,10 @@ void UART_Configure(void) {
 }
 
 void main(void){
+	UART_Configure();
 	GPIO_Configure(LED_PINS);
 	CAN_Configure();
-	UART_Configure();
+	TIM_Config();
 
 	while(1);
 }
