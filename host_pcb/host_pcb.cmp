@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by PcbNew date = 21-Oct-13 20:17:00
+Cmp-Mod V01 Created by PcbNew date = 21-Oct-13 20:35:51
 
 BeginCmp
 TimeStamp = /52654FB3;
@@ -88,7 +88,7 @@ BeginCmp
 TimeStamp = /526551E8;
 Reference = U5;
 ValeurCmp = LM2596;
-IdModule  = SOT353;
+IdModule  = TO263-5;
 EndCmp
 
 BeginCmp

@@ -1,6 +1,6 @@
-update=21-Oct-13 19:15:47
+update=21-Oct-13 20:35:03
 version=1
-last_client=pcbnew
+last_client=cvpcb
 [general]
 version=1
 [eeschema]
@@ -51,11 +51,6 @@ LibName33=SN65HVD230
 LibName34=STM32F407VG
 LibName35=ULN2803A
 LibName36=LM2596S
-[cvpcb]
-version=1
-NetIExt=net
-[cvpcb/libraries]
-EquName1=devcms
 [pcbnew]
 version=1
 PageLayoutDescrFile=
@@ -77,7 +72,6 @@ DrawSegmentWidth=0.2
 BoardOutlineThickness=0.15
 ModuleOutlineThickness=0.15
 [pcbnew/libraries]
-LibDir=mod
 LibName1=sockets
 LibName2=connect
 LibName3=discret
@@ -89,3 +83,10 @@ LibName8=valves
 LibName9=led
 LibName10=dip_sockets
 LibName11=modules
+LibName12=to263
+LibDir=mod
+[cvpcb]
+version=1
+NetIExt=net
+[cvpcb/libraries]
+EquName1=devcms
