@@ -1,0 +1,108 @@
+Cmp-Mod V01 Created by PcbNew date = 21-Oct-13 20:17:00
+
+BeginCmp
+TimeStamp = /52654FB3;
+Reference = C1;
+ValeurCmp = CP1;
+IdModule  = SM1812;
+EndCmp
+
+BeginCmp
+TimeStamp = /526550D9;
+Reference = C2;
+ValeurCmp = CP1;
+IdModule  = SM1812;
+EndCmp
+
+BeginCmp
+TimeStamp = /526550B1;
+Reference = D1;
+ValeurCmp = DIODESCH;
+IdModule  = SM1812;
+EndCmp
+
+BeginCmp
+TimeStamp = /526556F0;
+Reference = JP1;
+ValeurCmp = JUMPER;
+IdModule  = PIN_ARRAY_2X1;
+EndCmp
+
+BeginCmp
+TimeStamp = /526550C5;
+Reference = L1;
+ValeurCmp = INDUCTOR;
+IdModule  = SM1812;
+EndCmp
+
+BeginCmp
+TimeStamp = /52655589;
+Reference = P1;
+ValeurCmp = CONN_4;
+IdModule  = RJ45_8;
+EndCmp
+
+BeginCmp
+TimeStamp = /5265559D;
+Reference = P2;
+ValeurCmp = CONN_4;
+IdModule  = RJ45_8;
+EndCmp
+
+BeginCmp
+TimeStamp = /526556DC;
+Reference = R1;
+ValeurCmp = R;
+IdModule  = SM1812;
+EndCmp
+
+BeginCmp
+TimeStamp = /526537C3;
+Reference = U1;
+ValeurCmp = STM32F407VG;
+IdModule  = VQFP100;
+EndCmp
+
+BeginCmp
+TimeStamp = /526537EC;
+Reference = U2;
+ValeurCmp = ULN2803A;
+IdModule  = SO18L;
+EndCmp
+
+BeginCmp
+TimeStamp = /52653864;
+Reference = U3;
+ValeurCmp = ULN2803A;
+IdModule  = SO18L;
+EndCmp
+
+BeginCmp
+TimeStamp = /52653878;
+Reference = U4;
+ValeurCmp = ULN2803A;
+IdModule  = SO18L;
+EndCmp
+
+BeginCmp
+TimeStamp = /526551E8;
+Reference = U5;
+ValeurCmp = LM2596;
+IdModule  = SOT353;
+EndCmp
+
+BeginCmp
+TimeStamp = /5265548F;
+Reference = U6;
+ValeurCmp = SN65HVD230;
+IdModule  = SO8N;
+EndCmp
+
+BeginCmp
+TimeStamp = /52656480;
+Reference = U7;
+ValeurCmp = ULN2803A;
+IdModule  = SO20L;
+EndCmp
+
+EndListe
