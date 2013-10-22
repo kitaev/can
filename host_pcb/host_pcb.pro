@@ -1,6 +1,6 @@
-update=21-Oct-13 20:35:03
+update=22-Oct-13 19:25:23
 version=1
-last_client=cvpcb
+last_client=pcbnew
 [general]
 version=1
 [eeschema]
@@ -51,15 +51,20 @@ LibName33=SN65HVD230
 LibName34=STM32F407VG
 LibName35=ULN2803A
 LibName36=LM2596S
+[cvpcb]
+version=1
+NetIExt=net
+[cvpcb/libraries]
+EquName1=devcms
 [pcbnew]
 version=1
 PageLayoutDescrFile=
 LastNetListRead=
 UseCmpFile=1
-PadDrill=0.6
-PadDrillOvalY=0.6
-PadSizeH=1.4
-PadSizeV=1.4
+PadDrill=0
+PadDrillOvalY=0
+PadSizeH=0.508
+PadSizeV=1.27
 PcbTextSizeV=1.5
 PcbTextSizeH=1.5
 PcbTextThickness=0.3
@@ -72,6 +77,7 @@ DrawSegmentWidth=0.2
 BoardOutlineThickness=0.15
 ModuleOutlineThickness=0.15
 [pcbnew/libraries]
+LibDir=mod
 LibName1=sockets
 LibName2=connect
 LibName3=discret
@@ -84,9 +90,4 @@ LibName9=led
 LibName10=dip_sockets
 LibName11=modules
 LibName12=to263
-LibDir=mod
-[cvpcb]
-version=1
-NetIExt=net
-[cvpcb/libraries]
-EquName1=devcms
+LibName13=con-phoenix-250
