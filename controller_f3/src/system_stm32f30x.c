@@ -138,6 +138,7 @@
   */
 
   uint32_t SystemCoreClock = 72000000;
+//  uint32_t SystemCoreClock = 1000000;
 
   __I uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
 
@@ -332,6 +333,7 @@ static void SetSysClock(void)
  
      /* HCLK = SYSCLK / 1 */
      RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
+//     RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV8;
        
      /* PCLK2 = HCLK / 1 */
      RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
@@ -342,6 +344,7 @@ static void SetSysClock(void)
     /* PLL configuration */
     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL));
     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_PREDIV1 | RCC_CFGR_PLLXTPRE_PREDIV1 | RCC_CFGR_PLLMULL9);
+//    RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_PREDIV1 | RCC_CFGR_PLLXTPRE_PREDIV1 | RCC_CFGR_PLLMULL2);
 
     /* Enable PLL */
     RCC->CR |= RCC_CR_PLLON;
