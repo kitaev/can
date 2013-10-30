@@ -1,0 +1,17 @@
+"Id";"Designator";"Package";"Quantity";"Designation";"Supplier and ref";
+1;"U1";"SOT223";1;"LD1117S33CTR";;;
+2;"U3";"so-8";1;"SN65HVD230D";;;
+3;"R6,R2";"SM0805";2;"560R";;;
+4;"R1";"SM0805";1;"10K";;;
+5;"R5";"SM0805";1;"120R";;;
+6;"P1";"PIN_ARRAY_5x1";1;"SWD";;;
+7;"P3,P2,P4,P7";"pin_array_4x2";4;"CONN_4X2";;;
+8;"P6,P5";"PIN_ARRAY_4x1";2;"CONN_4";;;
+9;"JP1";"PIN_ARRAY_2X1";1;"JUMPER";;;
+10;"U2";"lqfp48";1;"STM32F303";;;
+11;"D1,D4";"LED-0805";2;"LED";;;
+12;"X1";"HC-49V";1;"8MHz";;;
+13;"C5,C6";"c_tant_C";2;"10uF";;;
+14;"C11,C12,C13,C9,C10,C1,C7";"c_0805";7;"100nF";;;
+15;"C2";"c_0805";1;"180pF";;;
+16;"C4,C3";"c_0805";2;"20pF";;;
