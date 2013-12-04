@@ -1,0 +1,10 @@
+GNU_TOOLS = C:/Program Files (x86)/Git
+
+TOOLSET_ROOT = C:/Program Files (x86)/COSMIC/CXSTM8_EVAL
+ST_TOOLSET_ROOT = C:/Program Files (x86)/STMicroelectronics/st_toolset
+
+COSMIC_HOME=C:/Program Files (x86)/COSMIC/CXSTM8_EVAL
+
+GNU_CC_HOME = C:/Program Files (x86)/GNU Tools ARM Embedded/4.7 2013q1
+STM32_FLASHER = C:/Program Files (x86)/STMicroelectronics/STM32 ST-LINK Utility/ST-LINK Utility/ST-LINK_CLI.exe
+STM32_FLASHER_ARGS = -q -c SWD UR -p $(TARGET).hex -V -HardRst -Run
